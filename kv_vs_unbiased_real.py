@@ -46,6 +46,7 @@ def fine(D, eps, delta, sig, c, n1, unbiased):
 		A[i] = fine_1d(D[i], eps, delta, sig, c, n1, unbiased)
 	return A
 
+dataset_path = input("height dataset path (include .csv): ")
 load_name = input("load results: ")
 
 if load_name:
@@ -57,7 +58,7 @@ else:
 	save_name = input("save results: ")
 
 	# load dataset
-	df = pd.read_csv(input("height dataset path (include .csv): "))
+	df = pd.read_csv(dataset_path)
 	A = df["Height (inches)"].to_numpy()
 	mu = np.mean(A)
 	sig = np.std(A)
@@ -89,17 +90,6 @@ else:
 	np.savez(save_name + ".npz",
 		M = M, N = N, eps = eps, delta = delta, mu = mu, sig = sig, c = c, n1 = n1,
 		unbiased_mu = unbiased_mu, biased_mu = biased_mu)
-
-"""
-NOTE: unbiased_mu = 0 implies coarse estimation failure, in which case the
-fine estimator falls back to the "name-and-shame" estimator, which can be
-easily to shown to have zero bias but very high variance that scales with 1/delta.
-We may therefore ignore these entries in order to estimate bias with fewer samples.
-Even when M is very large (e.g. 10^6), we only expect perhaps 1 or so coarse estimation
-failures for our given parameter settings.
-"""
-print(f"coarse estimation failures: {np.sum(unbiased_mu == 0)}/{len(unbiased_mu)}")
-unbiased_mu[unbiased_mu == 0] = np.mean(unbiased_mu)
 
 print(mu)
 print(f"unb: {np.mean(unbiased_mu) - mu} +- {2 * np.std(unbiased_mu) / np.sqrt(len(unbiased_mu))} (95% CI)")

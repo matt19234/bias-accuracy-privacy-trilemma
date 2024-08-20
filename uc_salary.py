@@ -27,10 +27,10 @@ else:
 	save_name = input("save results: ")
 
 	# === EXPERIMENT PARAMS ===
-	eps = np.array([0.05, 1])          # privacy params (plot code assumes 2 vals)
-	T = np.linspace(20000, 400000, 50) # range of truncation thresholds
-	M = 5000                           # no repetitions to estimate properties of estimator
-	N = 500                            # subsampling size
+	eps = np.array([0.01, 0.05, 0.1, 1, 2, 4]) # privacy params
+	T = np.linspace(20000, 400000, 50)         # range of truncation thresholds
+	M = 5000                                   # no repetitions to estimate properties of estimator
+	N = 500                                    # subsampling size
 	# =========================
 
 	# repeatedly run estimator
@@ -54,11 +54,11 @@ print(f"B = {B[np.arange(len(eps)), I]}")
 print(f"S = {S[np.arange(len(eps)), I]}")
 print(f"R = {R[np.arange(len(eps)), I]}")
 
+J = [1, 3] # which values of epsilon to plot (plot code assumes 2 vals)
 rescale = 1
 # plt.figure(figsize = (8, 4))
 fig, axs = plt.subplots(1, 2, figsize = (8, 4))
-for i in range(2):
-	# ax = axs[i // 2][i % 2]
+for i, j in enumerate(J):
 	ax = axs[i]
 
 	pdf_ax = ax.twinx()
@@ -67,10 +67,16 @@ for i in range(2):
 	pdf_ax.set_yticklabels([])
 	pdf_ax.set_yticks([])
 
-	ax.set_title(r"$\epsilon = " + str(eps[i]) + r"$")
-	ax.plot(T / rescale, -B[1], label = "Bias")
-	ax.plot(T / rescale, S[i], label = "Standard Error")
-	ax.plot(T / rescale, R[i], label = "RMSE")
+	ax.set_title(r"$\epsilon = " + str(eps[j]) + r"$")
+	# NOTE: for this estimator, bias is a function only of
+	# the truncation threshold, not of the magnitude of noise,
+	# which is in turn determined by epsilon. Moreover, since the
+	# noise scales with 1/epsilon, using the bias estimate corresponding
+	# to the largest value of epsilon (i.e. B[-1]) will lead to the most
+	# accurate estimate for all privacy levels.
+	ax.plot(T / rescale, -B[-1], label = "Bias")
+	ax.plot(T / rescale, S[j], label = "Standard Error")
+	ax.plot(T / rescale, R[j], label = "RMSE")
 	ax.set_xlabel(f"Clipping Threshold")
 	# if np.max(R[i]) > 100000:
 	# 	ax.set_ylim([0, 210000])
