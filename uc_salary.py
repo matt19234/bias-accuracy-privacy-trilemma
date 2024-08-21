@@ -56,14 +56,12 @@ print(f"R = {R[np.arange(len(eps)), I]}")
 
 J = [1, 3] # which values of epsilon to plot (plot code assumes 2 vals)
 rescale = 1
-# plt.figure(figsize = (8, 4))
 fig, axs = plt.subplots(1, 2, figsize = (8, 4))
 for i, j in enumerate(J):
 	ax = axs[i]
 
 	pdf_ax = ax.twinx()
 	pdf_ax.hist(A / rescale, bins = 1000, range = (0, 200000 / rescale), density = True, color = "r", alpha = 0.2)
-	# pdf_ax.fill_between(x / rescale, y, 0, alpha = 0.1, facecolor = "r")
 	pdf_ax.set_yticklabels([])
 	pdf_ax.set_yticks([])
 
@@ -74,15 +72,12 @@ for i, j in enumerate(J):
 	# noise scales with 1/epsilon, using the bias estimate corresponding
 	# to the largest value of epsilon (i.e. B[-1]) will lead to the most
 	# accurate estimate for all privacy levels.
-	ax.plot(T / rescale, -B[-1], label = "Bias")
-	ax.plot(T / rescale, S[j], label = "Standard Error")
-	ax.plot(T / rescale, R[j], label = "RMSE")
+	ax.plot(T / rescale, -B[-1], linestyle = "dotted", label = "Bias")
+	ax.plot(T / rescale, S[j], linestyle = "dashed", label = "Standard Error")
+	ax.plot(T / rescale, R[j], linestyle = "solid", label = "RMSE")
 	ax.set_xlabel(f"Clipping Threshold")
-	# if np.max(R[i]) > 100000:
-	# 	ax.set_ylim([0, 210000])
 	ax.legend(loc = "upper right")
 	ax.ticklabel_format(axis = "both", style = "sci", scilimits = (0, 0), useMathText = True)
-# fig.suptitle(r"Clip-and-Noise on UC 2011 Salary Dataset")
 plt.tight_layout()
 plt.savefig((load_name or save_name) + ".pdf", bbox_inches = "tight")
 plt.show()

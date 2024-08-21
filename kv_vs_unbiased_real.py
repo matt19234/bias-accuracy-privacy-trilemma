@@ -96,6 +96,7 @@ print(f"unb: {np.mean(unbiased_mu) - mu} +- {2 * np.std(unbiased_mu) / np.sqrt(l
 print(f"kv: {np.mean(biased_mu) - mu} +- {2 * np.std(biased_mu) / np.sqrt(len(biased_mu))} (95% CI)")
 
 plt.figure(figsize = (6, 4))
+plt.axvline(x = mu, color = "black", alpha = 0.8, linestyle = "dashed")
 plt.hist(biased_mu, density = True, bins = np.linspace(67, 69.25, 300), histtype='stepfilled', alpha = 1, label = "Karwa-Vadhan")
 plt.hist(unbiased_mu, density = True, bins = np.linspace(67, 69.25, 300), histtype='stepfilled', alpha = 0.9, label = "Bias-Corrected")
 plt.xlabel("Height (inches)")

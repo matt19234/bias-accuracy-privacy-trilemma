@@ -90,16 +90,14 @@ print(np.mean(biased_mu, -1))
 plt.figure(figsize = (6, 4))
 
 biased_err = 2 * np.std(biased_mu, -1) / np.sqrt(biased_mu.shape[-1])
-# biased_bias = np.mean(savgol_filter(biased_mu, 5, 3), -1)
 biased_bias = np.mean(biased_mu, -1)
 plt.plot(mus, biased_bias - mus, label = "Karwa-Vadhan")
-plt.fill_between(mus, biased_bias - mus - biased_err, biased_bias - mus + biased_err, alpha=0.3)
+plt.fill_between(mus, biased_bias - mus - biased_err, biased_bias - mus + biased_err, alpha = 0.5)
 
 unbiased_err = 2 * np.std(unbiased_mu, -1) / np.sqrt(unbiased_mu.shape[-1])
-# unbiased_bias = np.mean(savgol_filter(unbiased_mu, 5, 3), -1)
 unbiased_bias = np.mean(unbiased_mu, -1)
 plt.plot(mus, unbiased_bias - mus, label = "Bias-Corrected")
-plt.fill_between(mus, unbiased_bias - mus - unbiased_err, unbiased_bias - mus + unbiased_err, alpha=0.3)
+plt.fill_between(mus, unbiased_bias - mus - unbiased_err, unbiased_bias - mus + unbiased_err, alpha = 0.5)
 
 plt.xlabel(f"$\\mu$")
 plt.ylabel("Signed Bias")

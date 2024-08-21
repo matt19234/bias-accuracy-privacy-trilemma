@@ -54,10 +54,8 @@ R = np.sqrt(np.mean(D ** 2, -1))
 rescale = 1
 H = 50000
 
-# fig, axs = plt.subplots(2, 2)
 fig, axs = plt.subplots(1, 3, figsize = (12, 4))
 for i in range(len(eps)):
-	# ax = axs[i // 2][i % 2]
 	ax = axs[i]
 
 	x = np.linspace(1 / H, np.max(T), H)
@@ -68,18 +66,19 @@ for i in range(len(eps)):
 	pdf_ax.set_yticks([])
 
 	ax.set_title(r"$\epsilon = " + str(eps[i]) + r"$")
-	# ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%g'))
 	ax.ticklabel_format(axis = "x", style = "sci", scilimits = (0, 0), useMathText = True)
-	# ax.set_ylim(top = 80000)
-	ax.plot(T / rescale, -B[2], label = "Bias")
-	ax.plot(T / rescale, S[i], label = "Standard Error")
-	ax.plot(T / rescale, R[i], label = "RMSE")
+	# NOTE: for this estimator, bias is a function only of
+	# the truncation threshold, not of the magnitude of noise,
+	# which is in turn determined by epsilon. Moreover, since the
+	# noise scales with 1/epsilon, using the bias estimate corresponding
+	# to the largest value of epsilon (i.e. B[-1]) will lead to the most
+	# accurate estimate for all privacy levels.
+	ax.plot(T / rescale, -B[-1], linestyle = "dotted", label = "Bias")
+	ax.plot(T / rescale, S[i], linestyle = "dashed", label = "Standard Error")
+	ax.plot(T / rescale, R[i], linestyle = "solid", label = "RMSE")
 	ax.set_xlabel(f"Clipping Threshold")
 	ax.set_ylim(top = 88000, bottom = -4000)
-	# if np.max(R[i]) > 100000:
-	# 	ax.set_ylim([0, 210000])
 	ax.legend(loc = "upper right")
-# fig.suptitle("Clip-and-Noise on Synthetic Log-Normal Data")
 plt.tight_layout()
 plt.savefig((load_name or save_name) + ".pdf", bbox_inches = "tight")
 plt.show()
