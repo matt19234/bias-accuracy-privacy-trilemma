@@ -23,12 +23,16 @@ After setting up the environment, the workflow for reproducing our results is as
 > save results: results/lognormal_laplace
 ```
 
+Figure 1 is shown on screen and can now be found at ``results/lognormal_laplace.pdf``.
+
 ```
 > python uc_salary.py
 > salary dataset path: data/uc_salaries_2011.csv
 > load results:
 > save results: results/uc_salary
 ```
+
+Figure 2 is shown on screen and can now be found at ``results/uc_salary.pdf``. The data for Table 1 are located in the script text output.
 
 **Figure 3**
 
@@ -38,9 +42,13 @@ After setting up the environment, the workflow for reproducing our results is as
 > save results: results/kv_vs_unbiased
 ```
 
+Figure 3-1 is shown on screen and can now be found at ``results/kv_vs_unbiased.pdf``.
+
 ```
 > python kv_vs_unbiased_real.py
 > height dataset path: data/weights_heights.csv
 > load results:
 > save results: results/kv_vs_unbiased_real
 ```
+
+Figure 3-2 is shown on screen and can now be found at ``results/kv_vs_unbiased_real.pdf``.
