@@ -13,6 +13,10 @@ or alternatively by running\
 ``pip install numpy scipy tqdm matplotlib pandas``\
 which should yield compatible versions of the dependencies (our code is not reliant on version-specific features).
 
+The two datasets we use are included in this repository.
+- ``data/uc_salaries_2011.csv`` was downloaded from https://transparentcalifornia.com/salaries/2011/university-of-california/ (free account required).
+- ``data/weights_heights.csv`` was downloaded from http://wiki.stat.ucla.edu/socr/index.php/SOCR_Data_Dinov_020108_HeightsWeights#Complete_Data. This link appears to be broken now. A backup can be found at https://wiki.socr.umich.edu/index.php/SOCR_Data_Dinov_020108_HeightsWeights.
+
 After setting up the environment, the workflow for reproducing our results is as follows.
 
 **Figures 1-2 and Table 1**
