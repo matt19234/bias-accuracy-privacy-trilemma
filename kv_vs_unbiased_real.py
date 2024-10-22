@@ -5,64 +5,41 @@ import pandas as pd
 from scipy.stats import mode, skew
 from tqdm import tqdm
 
+from estimators import fine
+
+"""
+The purpose of this script is to help produce Figure 3. This experiment
+compares our unbiased estimator to the biased Karwa-Vadhan estimator
+on a real dataset (weights_heights.csv).
+"""
+
 # Fixed seed for reproducibility
 np.random.seed(0)
 
+# Subsample population without replacement to produce working
+# datasets.
 def subsample(A, N):
 	return A[np.random.choice(A.shape[0], N, replace = False)]
 
-def laplace_mech(D, t, eps):
-	return np.mean(D.clip(0, t)) + np.random.laplace(0, t / (eps * len(D)))
-
-def coarse_1d(D, eps, delta, unbiased):
-	T = np.random.uniform() if unbiased else 0
-	X = np.round(D - T).astype(np.int64)
-	m = np.min(X)
-	Y = np.bincount(X - m)
-	Z = Y + np.random.laplace(0, 2/eps, Y.shape)
-	Z[Y == 0] = 0
-
-	I = np.argmax(Z)
-
-	if Z[I] <= 2 + 2 * np.log(1 / delta) / eps:
-		return np.nan
-	else:
-		return I + m + T
-
-def fine_1d(D, eps, delta, sig, c, n1, unbiased):
-	mu_tilde = coarse_1d(D[:n1] / sig, eps, delta, unbiased) * sig
-
-	n2 = D.shape[0] - n1
-
-	if np.isnan(mu_tilde): # check for coarse estimator failure
-		B = np.random.binomial(1, delta, n2)
-		return 1/delta * np.mean(B * D[n1:]) # "name-and-shame" estimator
-	else:
-		return np.mean(D[n1:].clip(mu_tilde - c, mu_tilde + c)) + np.random.laplace(0, 2 * c / (n2 * eps))
-
-def fine(D, eps, delta, sig, c, n1, unbiased):
-	A = np.empty(D.shape[:-1])
-	for i in np.ndindex(A.shape):
-		A[i] = fine_1d(D[i], eps, delta, sig, c, n1, unbiased)
-	return A
-
+# Locate dataset (we will load it later if we need it)
 dataset_path = input("height dataset path (include .csv): ")
+
+# Check if results have already been computed
 load_name = input("load results: ")
 
 if load_name:
 	data = np.load(load_name + ".npz")
-	mu = data["mu"]
-	unbiased_mu = data["unbiased_mu"]
-	biased_mu = data["biased_mu"]
+	mu = data["mu"]                   # recover population mean
+	unbiased_mu = data["unbiased_mu"] # recover unbiased estimates of mu
+	biased_mu = data["biased_mu"]     # recover biased estimates of mu
 else:
 	save_name = input("save results: ")
 
 	# load dataset
 	df = pd.read_csv(dataset_path)
-	A = df["Height (inches)"].to_numpy()
+	A = df["Height (inches)"].to_numpy() # extract height column (no further processing)
 	mu = np.mean(A)
 	sig = np.std(A)
-	# A = np.concatenate((A, 2 * np.mean(A) - A))
 	print("skewness", skew(A))
 
 	# === EXPERIMENT PARAMS ===
@@ -86,7 +63,7 @@ else:
 		for _ in tqdm(range(M))
 	])
 
-	# save results to avoid recomputing when updating plots
+	# save results to avoid recomputing when adjusting plots
 	np.savez(save_name + ".npz",
 		M = M, N = N, eps = eps, delta = delta, mu = mu, sig = sig, c = c, n1 = n1,
 		unbiased_mu = unbiased_mu, biased_mu = biased_mu)

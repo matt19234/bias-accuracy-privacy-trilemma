@@ -3,27 +3,35 @@ from matplotlib import ticker
 import numpy as np
 from tqdm import tqdm
 
+from estimators import laplace_mech
+
+"""
+The purpose of this script is to produce Figure 1. This experiment
+shows the tradeoff between bias and error at different privacy levels
+on a synthetic dataset.
+"""
+
 # Fixed seed for reproducibility
 np.random.seed(0)
 
+# Produce synthetic log-normal dataset of size N.
 def sample(mu, sigma, N):
 	return np.exp(np.random.normal(mu, sigma, N))
 
+# PDF of above sampling distribution.
 def pdf(x, mu, sigma):
 	return 1 / (sigma * x * np.sqrt(2 * np.pi)) * np.exp(-1/2 * ((np.log(x) - mu) / sigma) ** 2)
 
-def laplace_mech(D, t, eps):
-	return np.mean(D.clip(0, t)) + np.random.laplace(0, t / (eps * len(D)))
-
+# check if results have already been computed
 load_name = input("load results: ")
 
 if load_name:
 	npz = np.load(load_name + ".npz")
-	D = npz["D"]
-	T = npz["T"]
-	eps = npz["eps"]
-	median = npz["median"]
-	sigma = npz["sigma"]
+	D = npz["D"]           # recover (mean-shifted) estimates
+	T = npz["T"]           # recover clipping thresholds
+	eps = npz["eps"]       # recover eps settings
+	median = npz["median"] # recover median used for synthetic sample
+	sigma = npz["sigma"]   # recover sig parameter for synthetic sample
 else:
 	save_name = input("save results: ")
 
@@ -44,15 +52,15 @@ else:
 		for e in tqdm(eps)
 	]) - mean
 
-	# save results to avoid recomputing when updating plots
+	# save results to avoid recomputing when adjusting plots
 	np.savez(save_name + ".npz", D = D, T = T, eps = eps, median = median, sigma = sigma)
 
-B = np.mean(D, -1)
-S = np.sqrt(np.var(D, -1))
-R = np.sqrt(np.mean(D ** 2, -1))
+B = np.mean(D, -1)               # estimated bias (for each val of epsilon)
+S = np.sqrt(np.var(D, -1))       # estimated standard err (for each val of epsilon)
+R = np.sqrt(np.mean(D ** 2, -1)) # estimated RMSE (for each val of epsilon)
 
-rescale = 1
-H = 50000
+rescale = 1 # rescale clipping threshold
+H = 50000   # number of points for showing population PDF in background
 
 fig, axs = plt.subplots(1, 3, figsize = (12, 4))
 for i in range(len(eps)):

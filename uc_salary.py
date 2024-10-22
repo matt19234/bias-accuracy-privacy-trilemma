@@ -3,19 +3,27 @@ import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 
+from estimators import laplace_mech
+
+"""
+The purpose of this script is to produce Figure 2 and Table 1. This
+experiment shows the tradeoff between bias and error at different
+privacy levels on a real dataset (uc_salaries_2011.csv).
+"""
+
 # Fixed seed for reproducibility
 np.random.seed(0)
 
-def laplace_mech(D, t, eps):
-	return np.mean(D.clip(0, t)) + np.random.laplace(0, t / (eps * len(D)))
+# Subsample population without replacement to produce working
+# datasets.
+def subsample(A, N):
+	return A[np.random.choice(A.shape[0], N, replace = False)]
 
-def subsample(A, n):
-	N = A.shape[0]
-	return A[np.random.choice(N, n, replace = False)]
-
+# load dataset
 df = pd.read_csv(input("salary dataset path (include .csv): "))
-A = df["Total Pay"].to_numpy()
+A = df["Total Pay"].to_numpy() # extract salary column (no further processing)
 
+# check if results have already been computed
 load_name = input("load results: ")
 
 if load_name:
@@ -40,12 +48,12 @@ else:
 		for e in tqdm(eps)
 	])
 
-	# save results to avoid recomputing when updating plots
+	# save results to avoid recomputing when adjusting plots
 	np.savez(save_name + ".npz", eps = eps, T = T, D = D)
 
-B = np.mean(D, -1)
-S = np.sqrt(np.var(D, -1))
-R = np.sqrt(np.mean(D ** 2, -1))
+B = np.mean(D, -1)               # estimated bias (for each truncation threshold)
+S = np.sqrt(np.var(D, -1))       # estimated standard err (for each truncation threshold)
+R = np.sqrt(np.mean(D ** 2, -1)) # estimated RMSE (for each truncation threshold)
 
 I = np.argmin(R, -1)
 print(f"eps = {eps}")
