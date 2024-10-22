@@ -17,22 +17,30 @@ After setting up the environment, the workflow for reproducing our results is as
 
 **Figures 1-2 and Table 1**
 
-\> python lognormal_laplace.py
-\> load results:  
-\> save results: results/lognormal_laplace
+```
+> python lognormal_laplace.py
+> load results:  
+> save results: results/lognormal_laplace
+```
 
-\> python uc_salary.py
-\> salary dataset path: data/uc_salaries_2011.csv
-\> load results:
-\> save results: results/uc_salary
+```
+> python uc_salary.py
+> salary dataset path: data/uc_salaries_2011.csv
+> load results:
+> save results: results/uc_salary
+```
 
 **Figure 3**
 
-\> python kv_vs_unbiased.py
-\> load results:
-\> save results: results/kv_vs_unbiased
+```
+> python kv_vs_unbiased.py
+> load results:
+> save results: results/kv_vs_unbiased
+```
 
-\> python kv_vs_unbiased_real.py
-\> height dataset path: data/weights_heights.csv
-\> load results:
-\> save results: results/kv_vs_unbiased_real
+```
+> python kv_vs_unbiased_real.py
+> height dataset path: data/weights_heights.csv
+> load results:
+> save results: results/kv_vs_unbiased_real
+```
