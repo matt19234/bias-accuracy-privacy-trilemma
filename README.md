@@ -7,26 +7,32 @@ All scripts display the results in a viewing window and also produce a PDF whose
 To modify experimental paramaters, look for the following marker in the code:\
 ``# === EXPERIMENT PARAMS ===``
 
-The workflow for reproducing our results is as follows.
+Dependencies including version numbers are listed in ``requirements.txt``. They can be installed using\
+``pip install -r requirements.txt``\
+or alternatively by running\
+``pip install numpy scipy tqdm matplotlib pandas``\
+which should yield compatible versions of the dependencies (our code is not reliant on version-specific features).
+
+After setting up the environment, the workflow for reproducing our results is as follows.
 
 **Figures 1-2 and Table 1**
 
 \> python lognormal_laplace.py
 \> load results:  
-\> save results: lognormal_laplace
+\> save results: results/lognormal_laplace
 
 \> python uc_salary.py
-\> salary dataset path: uc_salaries_2011.csv
+\> salary dataset path: data/uc_salaries_2011.csv
 \> load results:
-\> save results: uc_salary
+\> save results: results/uc_salary
 
 **Figure 3**
 
 \> python kv_vs_unbiased.py
 \> load results:
-\> save results: kv_vs_unbiased
+\> save results: results/kv_vs_unbiased
 
 \> python kv_vs_unbiased_real.py
-\> height dataset path: weights_heights.csv
+\> height dataset path: data/weights_heights.csv
 \> load results:
-\> save results: kv_vs_unbiased_real
+\> save results: results/kv_vs_unbiased_real
